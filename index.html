@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pen</title>
+  </head>
+  <body>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- 手機版 RWD -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Portfolio - Web Programming</title>
+
+    <style>
+        /* =========================
+           基本設定
+        ========================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: "Trebuchet MS", "Microsoft JhengHei", sans-serif;
+            color: white;
+
+            /* Y2K 賽博龐克背景 */
+            background:
+                radial-gradient(circle at 20% 20%, #ff00cc33 0%, transparent 30%),
+                radial-gradient(circle at 80% 30%, #00ffff33 0%, transparent 30%),
+                radial-gradient(circle at 50% 90%, #7b00ff33 0%, transparent 35%),
+                linear-gradient(135deg, #080014, #120025 50%, #00152b);
+
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 背景網格 */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+
+            background-image:
+                linear-gradient(#00ffff12 1px, transparent 1px),
+                linear-gradient(90deg, #00ffff12 1px, transparent 1px);
+
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* =========================
+           裝飾光球
+        ========================== */
+
+        .orb {
+            position: fixed;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            filter: blur(70px);
+            opacity: 0.4;
+            z-index: 0;
+            pointer-events: none;
+            animation: float 7s ease-in-out infinite;
+        }
+
+        .orb1 {
+            background: #ff00cc;
+            top: -80px;
+            left: -80px;
+        }
+
+        .orb2 {
+            background: #00ffff;
+            right: -80px;
+            top: 40%;
+            animation-delay: -3s;
+        }
+
+        .orb3 {
+            background: #7b00ff;
+            bottom: -100px;
+            left: 40%;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(30px, -25px);
+            }
+        }
+
+        /* =========================
+           主容器
+        ========================== */
+
+        .container {
+            position: relative;
+            z-index: 1;
+
+            width: min(1000px, 92%);
+            margin: 0 auto;
+
+            min-height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            padding: 60px 0 80px;
+        }
+
+        /* =========================
+           個人資料
+        ========================== */
+
+        .profile {
+            text-align: center;
+            margin-bottom: 35px;
+
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+
+            object-fit: cover;
+
+            border-radius: 50%;
+
+            border: 4px solid #00ffff;
+
+            box-shadow:
+                0 0 10px #00ffff,
+                0 0 30px #00ffff88,
+                0 0 70px #ff00cc55;
+
+            margin-bottom: 20px;
+
+            transition: 0.4s ease;
+        }
+
+        .avatar:hover {
+            transform: rotate(5deg) scale(1.08);
+
+            border-color: #ff00cc;
+
+            box-shadow:
+                0 0 15px #ff00cc,
+                0 0 40px #ff00cc,
+                0 0 80px #00ffff66;
+        }
+
+        .name {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 900;
+
+            letter-spacing: 5px;
+
+            color: white;
+
+            text-shadow:
+                3px 3px 0 #ff00cc,
+                -3px -3px 0 #00ffff,
+                0 0 20px #ffffff88;
+        }
+
+        .subtitle {
+            margin-top: 10px;
+
+            color: #8fffff;
+
+            letter-spacing: 3px;
+            font-size: 0.95rem;
+
+            text-transform: uppercase;
+        }
+
+        /* =========================
+           任務面板
+        ========================== */
+
+        .mission-box {
+            width: 100%;
+
+            padding: 25px;
+
+            border: 1px solid #00ffff88;
+
+            border-radius: 25px;
+
+            background: rgba(255, 255, 255, 0.07);
+
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+
+            box-shadow:
+                inset 0 0 30px #00ffff08,
+                0 0 30px #00ffff15;
+
+            position: relative;
+        }
+
+        .mission-title {
+            text-align: center;
+
+            margin-bottom: 22px;
+
+            color: #00ffff;
+
+            font-size: 1rem;
+            letter-spacing: 4px;
+
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        /* =========================
+           按鈕 Grid
+        ========================== */
+
+        .menu {
+            display: grid;
+
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 15px;
+        }
+
+        .menu-button {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 75px;
+
+            padding: 15px;
+
+            border-radius: 15px;
+
+            text-decoration: none;
+
+            color: #ffffff;
+
+            font-size: 0.95rem;
+            font-weight: bold;
+
+            text-align: center;
+
+            border: 1px solid #00ffff99;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(0, 255, 255, 0.12),
+                    rgba(255, 0, 204, 0.12)
+                );
+
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+
+            overflow: hidden;
+
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+
+            cursor: pointer;
+        }
+
+        /* 按鈕掃光效果 */
+        .menu-button::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: -120%;
+
+            width: 70%;
+            height: 100%;
+
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255,255,255,0.35),
+                transparent
+            );
+
+            transform: skewX(-20deg);
+
+            transition: left 0.5s ease;
+        }
+
+        .menu-button:hover::before {
+            left: 150%;
+        }
+
+        /* 已解鎖按鈕 Hover */
+        .unlocked:hover {
+            transform: translateY(-7px) scale(1.03);
+
+            border-color: #ff00cc;
+
+            box-shadow:
+                0 8px 25px #ff00cc44,
+                0 0 20px #00ffff55,
+                inset 0 0 20px #00ffff11;
+
+            color: #ffffff;
+        }
+
+        /* 按鈕文字 */
+        .button-text {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* =========================
+           未解鎖按鈕
+        ========================== */
+
+        .locked {
+            color: #777b87;
+
+            border-color: #555866;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(80, 80, 90, 0.25),
+                    rgba(40, 40, 50, 0.4)
+                );
+
+            filter: grayscale(0.7);
+
+            cursor: not-allowed;
+
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+        }
+
+        .locked:hover {
+            transform: translateY(-3px);
+
+            border-color: #777b87;
+
+            box-shadow:
+                0 0 15px #777b8733;
+        }
+
+        .lock-icon {
+            margin-right: 7px;
+            font-size: 1.1rem;
+        }
+
+        /* =========================
+           Footer
+        ========================== */
+
+        footer {
+            margin-top: 30px;
+
+            color: #777c99;
+
+            font-size: 0.8rem;
+
+            letter-spacing: 2px;
+
+            text-align: center;
+        }
+
+        /* =========================
+           進場動畫
+        ========================== */
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mission-box {
+            animation: fadeIn 1s ease 0.2s both;
+        }
+
+        /* =========================
+           平板
+        ========================== */
+
+        @media (max-width: 800px) {
+
+            .menu {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        /* =========================
+           手機
+        ========================== */
+
+        @media (max-width: 500px) {
+
+            .container {
+                width: 94%;
+                padding-top: 40px;
+            }
+
+            .avatar {
+                width: 120px;
+                height: 120px;
+            }
+
+            .name {
+                font-size: 2rem;
+                letter-spacing: 3px;
+            }
+
+            .subtitle {
+                font-size: 0.75rem;
+                letter-spacing: 2px;
+            }
+
+            .mission-box {
+                padding: 15px;
+                border-radius: 20px;
+            }
+
+            .menu {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .menu-button {
+                min-height: 85px;
+                padding: 10px 6px;
+                font-size: 0.82rem;
+                border-radius: 12px;
+            }
+
+            footer {
+                font-size: 0.7rem;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- 背景裝飾 -->
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+
+    <main class="container">
+
+        <!-- =========================
+             個人資料
+        ========================== -->
+
+        <section class="profile">
+
+            <!-- 假大頭貼，可以之後換成自己的圖片 -->
+            <img
+                class="avatar"
+                src="https://i.postimg.cc/qvnbr564/unnamed.jpg"
+                alt="我的大頭貼"
+            >
+
+            <h1 class="name">高德英</h1>
+
+            <p class="subtitle">
+                ✦ Web Programming Portfolio ✦
+            </p>
+
+        </section>
+
+
+        <!-- =========================
+             課程任務
+        ========================== -->
+
+        <section class="mission-box">
+
+            <h2 class="mission-title">
+                ＭＩＳＳＩＯＮ&nbsp;&nbsp;ＳＥＬＥＣＴ
+            </h2>
+
+            <div class="menu">
+
+                <!-- ===== 已解鎖 ===== -->
+
+                <a href="w1/index.html" class="menu-button unlocked">
+                    <span class="button-text">
+                        Week 1 - 數位名片
+                    </span>
+                </a>
+
+                <a href="w2/index.html" class="menu-button unlocked">
+                    <span class="button-text">
+                        Week 2 - 今天吃甚麼?
+                    </span>
+                </a>
+
+
+                <!-- ===== 未解鎖 ===== -->
+
+                <a href="#" class="menu-button locked">
+                    <span class="button-text">
+                        <span class="lock-icon">🔒</span>
+                        Week 3 - 未解鎖
+                    </span>
+                </a>
+
+                <a href="#" class="menu-button locked">
+                    <span class="button-text">
+                        <span class="lock-icon">🔒</span>
+                        Week 4 - 未解鎖
+                    </span>
+                </a>
+
+                <a href="#" class="menu-button locked">
+                    <span class="button-text">
+                        <span class="lock-icon">🔒</span>
+                        Week 5 - 未解鎖
+                    </span>
+                </a>
+
+                <a href="#" class="menu-button locked">
+                    <span class="button-text">
+                        <span class="lock-icon">🔒</span>
+                        Week 6 - 未解鎖
+                    </span>
+                </a>
+
+                <a href="#" class="menu-button locked">
+                    <span class="button-text">
+                        <span class="lock-icon">🔒</span>
+                        Week 7 - 未解鎖
+                    </span>
+                </a>
+
+                <a href="#" class="menu-button locked">
+                    <span class="button-text">
+                        <span class="lock-icon">🔒</span>
+                        Week 8 - 未解鎖
+                    </span>
+                </a>
+
+                <a href="#" class="menu-button locked">
+                    <span class="button-text">
+                        <span class="lock-icon">🔒</span>
+                        Week 9 - 未解鎖
+                    </span>
+                </a>
+
+                <a href="#" class="menu-button locked">
+                    <span class="button-text">
+                        <span class="lock-icon">🔒</span>
+                        Week 10 - 未解鎖
+                    </span>
+                </a>
+
+                <a href="#" class="menu-button locked">
+                    <span class="button-text">
+                        <span class="lock-icon">🔒</span>
+                        Week 11 - 未解鎖
+                    </span>
+                </a>
+
+                <a href="#" class="menu-button locked">
+                    <span class="button-text">
+                        <span class="lock-icon">🔒</span>
+                        Week 12 - 未解鎖
+                    </span>
+                </a>
+
+                <a href="#" class="menu-button locked">
+                    <span class="button-text">
+                        <span class="lock-icon">🔒</span>
+                        Week 13 - 未解鎖
+                    </span>
+                </a>
+
+                <a href="#" class="menu-button locked">
+                    <span class="button-text">
+                        <span class="lock-icon">🔒</span>
+                        Week 14 - 未解鎖
+                    </span>
+                </a>
+
+                <a href="#" class="menu-button locked">
+                    <span class="button-text">
+                        <span class="lock-icon">🔒</span>
+                        Week 15 - 未解鎖
+                    </span>
+                </a>
+
+                <a href="#" class="menu-button locked">
+                    <span class="button-text">
+                        <span class="lock-icon">🔒</span>
+                        Week 16 - 未解鎖
+                    </span>
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <footer>
+            © 2026 MY PORTFOLIO · SYSTEM ONLINE
+        </footer>
+
+    </main>
+
+</body>
+</html>
