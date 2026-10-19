@@ -1,10 +1,5 @@
-portfolio/
-├── index.html
-├── w1/
-│   └── index.html
-├── w2/
-│   └── index.html
-├── w3/
-│   └── index.html
-└── w4/
-    └── index.html
+<a href="w4/index.html" class="menu-button unlocked">
+    <span class="button-text">
+        Week 4 - Cyberpunk To-Do List
+    </span>
+</a>
