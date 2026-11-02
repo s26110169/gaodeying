@@ -1,0 +1,498 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 4 - Cyber Task Manager</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    font-family: "Trebuchet MS", "Microsoft JhengHei", sans-serif;
+    color: white;
+    padding: 35px 15px;
+
+    background:
+        radial-gradient(circle at 20% 20%, #ff00cc33, transparent 35%),
+        radial-gradient(circle at 80% 80%, #00ffff33, transparent 35%),
+        linear-gradient(135deg, #080014, #120025, #00152b);
+}
+
+.container {
+    width: min(750px, 100%);
+    margin: auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: clamp(2rem, 6vw, 3rem);
+    letter-spacing: 3px;
+    text-shadow:
+        0 0 10px #00ffff,
+        0 0 25px #ff00cc;
+}
+
+header p {
+    color: #00ffff;
+    margin-top: 10px;
+    letter-spacing: 2px;
+}
+
+.panel {
+    padding: 25px;
+    border: 1px solid #00ffff88;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 0 30px #00ffff22;
+    margin-bottom: 20px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.stat {
+    text-align: center;
+    padding: 18px 8px;
+    border: 1px solid #00ffff55;
+    border-radius: 15px;
+    background: #00ffff0d;
+}
+
+.stat h2 {
+    color: #00ffff;
+    font-size: 2rem;
+}
+
+.stat p {
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-top: 5px;
+}
+
+h3 {
+    color: #00ffff;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+}
+
+input {
+    min-width: 0;
+    flex: 1;
+    padding: 14px;
+    border: 1px solid #00ffff88;
+    border-radius: 10px;
+    outline: none;
+    background: #080014;
+    color: white;
+    font-size: 1rem;
+}
+
+input:focus {
+    border-color: #ff00cc;
+    box-shadow: 0 0 12px #ff00cc66;
+}
+
+button {
+    border: none;
+    border-radius: 10px;
+    padding: 12px 18px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.add-btn {
+    color: #080014;
+    background: linear-gradient(90deg, #00ffff, #ff00cc);
+}
+
+.add-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px #00ffff88;
+}
+
+.filters {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: #ffffff12;
+    border: 1px solid #00ffff55;
+    color: white;
+}
+
+.filter-btn.active {
+    background: #00ffff;
+    color: #080014;
+    box-shadow: 0 0 15px #00ffff88;
+}
+
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.task {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    border: 1px solid #00ffff44;
+    border-radius: 12px;
+    background: #ffffff09;
+    animation: appear 0.3s ease;
+}
+
+.task span {
+    flex: 1;
+    overflow-wrap: anywhere;
+}
+
+.task.done span {
+    color: #777;
+    text-decoration: line-through;
+}
+
+.check-btn {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid #00ffff;
+    border-radius: 50%;
+    background: transparent;
+    color: #00ffff;
+}
+
+.task.done .check-btn {
+    background: #00ffff;
+    color: #080014;
+}
+
+.delete-btn {
+    padding: 8px 12px;
+    background: #ff007f22;
+    color: #ff4da6;
+    border: 1px solid #ff007f66;
+}
+
+.delete-btn:hover {
+    background: #ff007f;
+    color: white;
+}
+
+.empty {
+    text-align: center;
+    color: #888;
+    padding: 35px 10px;
+}
+
+footer {
+    text-align: center;
+    margin-top: 25px;
+    color: #777c99;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media(max-width: 500px) {
+    .panel {
+        padding: 16px;
+    }
+
+    .stats {
+        gap: 7px;
+    }
+
+    .stat h2 {
+        font-size: 1.5rem;
+    }
+
+    .stat p {
+        font-size: 0.7rem;
+    }
+
+    .input-group {
+        flex-direction: column;
+    }
+
+    .add-btn {
+        padding: 14px;
+    }
+
+    .task {
+        padding: 12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>CYBER TASK MANAGER</h1>
+        <p>✦ MY DAILY MISSION SYSTEM ✦</p>
+    </header>
+
+    <section class="panel">
+
+        <h3>MISSION STATUS</h3>
+
+        <div class="stats">
+            <div class="stat">
+                <h2 id="total">0</h2>
+                <p>全部任務</p>
+            </div>
+
+            <div class="stat">
+                <h2 id="completed">0</h2>
+                <p>已完成</p>
+            </div>
+
+            <div class="stat">
+                <h2 id="remaining">0</h2>
+                <p>未完成</p>
+            </div>
+        </div>
+
+        <h3>NEW MISSION</h3>
+
+        <div class="input-group">
+            <input
+                type="text"
+                id="task-input"
+                placeholder="輸入今天要完成的任務..."
+                maxlength="100"
+            >
+
+            <button class="add-btn" onclick="addTask()">
+                + ADD
+            </button>
+        </div>
+
+    </section>
+
+    <section class="panel">
+
+        <h3>MISSION LIST</h3>
+
+        <div class="filters">
+            <button class="filter-btn active"
+                onclick="setFilter('all', this)">
+                全部
+            </button>
+
+            <button class="filter-btn"
+                onclick="setFilter('active', this)">
+                未完成
+            </button>
+
+            <button class="filter-btn"
+                onclick="setFilter('done', this)">
+                已完成
+            </button>
+        </div>
+
+        <div class="task-list" id="task-list"></div>
+
+    </section>
+
+    <footer>
+        © 2026 CYBER TASK MANAGER · SYSTEM ONLINE
+    </footer>
+
+</div>
+
+<script>
+
+// 載入已儲存的任務
+let tasks = [];
+
+try {
+    tasks = JSON.parse(
+        localStorage.getItem("cyberTasks") || "[]"
+    );
+
+    if (!Array.isArray(tasks)) tasks = [];
+} catch {
+    tasks = [];
+}
+
+let currentFilter = "all";
+
+// 儲存任務
+function saveTasks() {
+    localStorage.setItem(
+        "cyberTasks",
+        JSON.stringify(tasks)
+    );
+}
+
+// 新增任務
+function addTask() {
+    const input = document.getElementById("task-input");
+    const text = input.value.trim();
+
+    if (text === "") {
+        alert("請輸入任務內容！");
+        return;
+    }
+
+    tasks.push({
+        id: Date.now() + Math.random(),
+        text: text,
+        done: false
+    });
+
+    input.value = "";
+
+    saveTasks();
+    renderTasks();
+}
+
+// Enter 新增任務
+document.getElementById("task-input")
+    .addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            addTask();
+        }
+    });
+
+// 完成任務
+function toggleTask(id) {
+    tasks = tasks.map(task => {
+        if (task.id === id) {
+            return {
+                ...task,
+                done: !task.done
+            };
+        }
+        return task;
+    });
+
+    saveTasks();
+    renderTasks();
+}
+
+// 刪除任務
+function deleteTask(id) {
+    tasks = tasks.filter(task => task.id !== id);
+
+    saveTasks();
+    renderTasks();
+}
+
+// 切換篩選
+function setFilter(filter, button) {
+    currentFilter = filter;
+
+    document.querySelectorAll(".filter-btn")
+        .forEach(btn => btn.classList.remove("active"));
+
+    button.classList.add("active");
+
+    renderTasks();
+}
+
+// 顯示任務
+function renderTasks() {
+    const list = document.getElementById("task-list");
+
+    const completedCount = tasks.filter(t => t.done).length;
+
+    document.getElementById("total").textContent = tasks.length;
+    document.getElementById("completed").textContent = completedCount;
+    document.getElementById("remaining").textContent =
+        tasks.length - completedCount;
+
+    let filteredTasks = tasks;
+
+    if (currentFilter === "active") {
+        filteredTasks = tasks.filter(t => !t.done);
+    }
+
+    if (currentFilter === "done") {
+        filteredTasks = tasks.filter(t => t.done);
+    }
+
+    list.innerHTML = "";
+
+    if (filteredTasks.length === 0) {
+        list.innerHTML = `
+            <div class="empty">
+                ✦ NO MISSION FOUND ✦
+                <br><br>
+                開始新增你的任務吧！
+            </div>
+        `;
+        return;
+    }
+
+    filteredTasks.forEach(task => {
+        const item = document.createElement("div");
+
+        item.className = task.done ? "task done" : "task";
+
+        const check = document.createElement("button");
+        check.className = "check-btn";
+        check.textContent = task.done ? "✓" : "";
+        check.setAttribute("aria-label", "切換完成狀態");
+        check.addEventListener("click", () => toggleTask(task.id));
+
+        const span = document.createElement("span");
+        span.textContent = task.text;
+
+        const del = document.createElement("button");
+        del.className = "delete-btn";
+        del.textContent = "DELETE";
+        del.addEventListener("click", () => deleteTask(task.id));
+
+        item.append(check, span, del);
+        list.appendChild(item);
+    });
+}
+
+// 初始化
+renderTasks();
+
+</script>
+
+</body>
+</html>
