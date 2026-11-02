@@ -1,0 +1,388 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Week 1 - Cyber Digital Card</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    font-family: "Trebuchet MS", "Microsoft JhengHei", sans-serif;
+    color: white;
+
+    background:
+        radial-gradient(circle at 20% 20%, #ff00cc33, transparent 35%),
+        radial-gradient(circle at 80% 70%, #00ffff33, transparent 35%),
+        linear-gradient(135deg, #080014, #120025, #00152b);
+
+    padding: 30px 15px;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(#00ffff12 1px, transparent 1px),
+        linear-gradient(90deg, #00ffff12 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+    width: min(650px, 100%);
+    margin: auto;
+}
+
+/* Header */
+
+header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+header h1 {
+    font-size: clamp(2rem, 6vw, 3rem);
+    letter-spacing: 3px;
+    text-shadow:
+        0 0 10px #00ffff,
+        0 0 25px #ff00cc;
+}
+
+header p {
+    color: #00ffff;
+    margin-top: 10px;
+    letter-spacing: 3px;
+}
+
+/* Home button */
+
+.home-btn {
+    display: inline-block;
+    text-decoration: none;
+    color: #00ffff;
+    border: 1px solid #00ffff88;
+    padding: 10px 18px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    transition: 0.3s;
+}
+
+.home-btn:hover {
+    background: #00ffff;
+    color: #080014;
+    box-shadow: 0 0 20px #00ffff;
+}
+
+/* Profile card */
+
+.card {
+    padding: 35px 25px;
+    text-align: center;
+
+    border: 1px solid #00ffff88;
+    border-radius: 25px;
+
+    background: rgba(255,255,255,0.07);
+    backdrop-filter: blur(15px);
+
+    box-shadow:
+        0 0 30px #00ffff22,
+        inset 0 0 20px #00ffff11;
+
+    animation: fadeIn 1s ease;
+}
+
+.avatar {
+    width: 145px;
+    height: 145px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #00ffff;
+
+    box-shadow:
+        0 0 15px #00ffff,
+        0 0 35px #ff00cc55;
+
+    margin-bottom: 20px;
+    transition: 0.4s;
+}
+
+.avatar:hover {
+    transform: rotate(5deg) scale(1.08);
+    border-color: #ff00cc;
+}
+
+.name {
+    font-size: 2.2rem;
+    letter-spacing: 5px;
+    text-shadow:
+        2px 2px #ff00cc,
+        -2px -2px #00ffff;
+}
+
+.subtitle {
+    color: #00ffff;
+    margin-top: 10px;
+    letter-spacing: 2px;
+}
+
+/* About */
+
+.section {
+    margin-top: 30px;
+    text-align: left;
+}
+
+.section h2 {
+    color: #00ffff;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #00ffff55;
+    padding-bottom: 10px;
+}
+
+.section p {
+    color: #d0d0dd;
+    line-height: 1.9;
+}
+
+/* Information */
+
+.info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.info-item {
+    padding: 15px;
+    background: #00ffff0d;
+    border: 1px solid #00ffff44;
+    border-radius: 12px;
+}
+
+.info-item h3 {
+    color: #00ffff;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+}
+
+.info-item p {
+    color: white;
+    font-size: 0.9rem;
+}
+
+/* Skills */
+
+.skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.skill {
+    padding: 9px 15px;
+    border: 1px solid #ff00cc88;
+    border-radius: 20px;
+    color: #ff8ad5;
+    background: #ff00cc11;
+    transition: 0.3s;
+}
+
+.skill:hover {
+    background: #ff00cc;
+    color: white;
+    box-shadow: 0 0 15px #ff00cc;
+}
+
+/* Contact */
+
+.contact {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.contact a {
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    color: white;
+    border: 1px solid #00ffff88;
+    background: linear-gradient(135deg, #00ffff22, #ff00cc22);
+    transition: 0.3s;
+}
+
+.contact a:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px #00ffff88;
+}
+
+footer {
+    text-align: center;
+    margin-top: 30px;
+    color: #777c99;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media(max-width: 500px) {
+    .card {
+        padding: 25px 18px;
+    }
+
+    .avatar {
+        width: 120px;
+        height: 120px;
+    }
+
+    .name {
+        font-size: 1.8rem;
+    }
+
+    .info {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>DIGITAL BUSINESS CARD</h1>
+        <p>✦ MY CYBER PROFILE ✦</p>
+    </header>
+
+    <a href="../index.html" class="home-btn">
+        ← BACK TO HOME
+    </a>
+
+    <main class="card">
+
+        <!-- Profile -->
+
+        <img
+            class="avatar"
+            src="https://i.postimg.cc/qvnbr564/unnamed.jpg"
+            alt="個人頭像"
+        >
+
+        <h2 class="name">高德英</h2>
+
+        <p class="subtitle">
+            WEB PROGRAMMING STUDENT
+        </p>
+
+        <!-- About -->
+
+        <section class="section">
+            <h2>ABOUT ME</h2>
+
+            <p>
+                哈囉！我是高德英。
+                我是一位喜歡學習新事物的學生，
+                對網頁設計、科技和創意充滿興趣。
+                希望透過學習 HTML、CSS 和 JavaScript，
+                製作出有趣又實用的網站！
+            </p>
+        </section>
+
+        <!-- Information -->
+
+        <section class="section">
+            <h2>MY INFORMATION</h2>
+
+            <div class="info">
+
+                <div class="info-item">
+                    <h3>NAME</h3>
+                    <p>高德英</p>
+                </div>
+
+                <div class="info-item">
+                    <h3>ROLE</h3>
+                    <p>學生</p>
+                </div>
+
+                <div class="info-item">
+                    <h3>MAJOR</h3>
+                    <p>Web Programming</p>
+                </div>
+
+                <div class="info-item">
+                    <h3>GOAL</h3>
+                    <p>成為網頁設計高手</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Skills -->
+
+        <section class="section">
+            <h2>MY INTERESTS</h2>
+
+            <div class="skills">
+                <span class="skill">💻 Coding</span>
+                <span class="skill">🎨 Design</span>
+                <span class="skill">🎮 Gaming</span>
+                <span class="skill">🎵 Music</span>
+                <span class="skill">🌐 Technology</span>
+            </div>
+        </section>
+
+        <!-- Contact -->
+
+        <section class="section">
+            <h2>CONTACT ME</h2>
+
+            <div class="contact">
+                <a href="mailto:your@email.com">
+                    ✉ Email
+                </a>
+
+                <a href="../index.html">
+                    🏠 Portfolio
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        © 2026 MY DIGITAL CARD · SYSTEM ONLINE
+    </footer>
+
+</div>
+
+</body>
+</html>
