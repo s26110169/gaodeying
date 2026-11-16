@@ -1,0 +1,463 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>雲端心電感應</title>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #F4F3EF;
+  color: #37352F;
+  font-family: Arial, sans-serif;
+}
+
+.card {
+  background: white;
+  border: 1px solid #E3E1D9;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 2px 8px #00000008;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #E3E1D9;
+  border-radius: 8px;
+  background: #F9F8F5;
+  outline: none;
+}
+
+input:focus {
+  border-color: #7E8B9B;
+}
+
+button {
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 10px 16px;
+  transition: .2s;
+}
+
+button:hover { opacity: .85; }
+
+.primary {
+  background: #7E8B9B;
+  color: white;
+}
+
+.sage {
+  background: #CCD3CA;
+  color: #37352F;
+}
+
+.host {
+  background: #F1E6DA;
+  border: 1px solid #E5D4C0;
+}
+
+.hidden { display: none !important; }
+
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
+  gap: 15px;
+}
+
+.perspective { perspective: 1000px; height: 155px; }
+
+.flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform .8s cubic-bezier(.4,0,.2,1);
+}
+
+.flipped .flip-inner { transform: rotateY(180deg); }
+
+.front, .back {
+  position: absolute;
+  inset: 0;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #E3E1D9;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  backface-visibility: hidden;
+  overflow-wrap: anywhere;
+}
+
+.front { background: white; }
+.back {
+  background: #E7EBF0;
+  transform: rotateY(180deg);
+}
+
+.status {
+  font-size: 12px;
+  color: #787774;
+}
+
+@media(max-width:500px) {
+  main { padding: 12px !important; }
+  .card { padding: 16px; }
+  .grid-cards { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+</style>
+</head>
+
+<body>
+
+<header style="max-width:850px;margin:auto;padding:25px 15px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #E3E1D9">
+  <div>
+    <h1 style="font-size:23px;font-weight:bold">🧠 雲端心電感應</h1>
+    <p style="font-size:12px;color:#787774">Notion Style Telepathy Game</p>
+  </div>
+  <button onclick="toggleHost()" style="border:1px solid #E3E1D9">
+    <span id="hostBadge">👤 玩家 View</span>
+  </button>
+</header>
+
+<main style="max-width:850px;margin:auto;padding:25px 15px">
+
+  <!-- LOGIN -->
+  <section id="login" class="card" style="max-width:450px;margin:auto">
+    <h2 style="text-align:center;font-size:20px;margin-bottom:20px">進入房間</h2>
+
+    <label>玩家暱稱</label>
+    <input id="playerName" placeholder="請輸入你的暱稱" style="margin:8px 0 18px">
+
+    <label>房間代碼 (Room ID)</label>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <input id="roomId" placeholder="例如: 888">
+      <button onclick="randomRoom()" style="border:1px solid #E3E1D9;white-space:nowrap">隨機</button>
+    </div>
+
+    <button class="primary" style="width:100%;margin-top:20px" onclick="joinRoom()">
+      加入遊戲
+    </button>
+  </section>
+
+  <!-- GAME -->
+  <section id="game" class="hidden" style="display:flex;flex-direction:column;gap:20px">
+
+    <div class="card" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <span>房號: <b id="showRoom"></b></span>
+      <span>暱稱: <b id="showName"></b></span>
+      <span id="connection" class="status">● 連線中</span>
+    </div>
+
+    <!-- HOST -->
+    <div id="hostPanel" class="card host hidden">
+      <h3 style="font-weight:bold;margin-bottom:15px">👑 房主控制台</h3>
+
+      <input id="questionInput" placeholder="請輸入本次心電感應題目">
+
+      <button class="primary" onclick="setQuestion()" style="margin-top:10px">
+        出題
+      </button>
+
+      <div style="display:flex;gap:10px;margin-top:15px;flex-wrap:wrap">
+        <button class="sage" onclick="reveal()" style="flex:1">
+          🃏 開牌 (揭曉全體答案)
+        </button>
+        <button onclick="resetGame()" style="background:white;border:1px solid #E3E1D9">
+          🔄 清空重置
+        </button>
+      </div>
+
+      <p id="hostStatus" class="status" style="margin-top:12px">狀態: 等待中</p>
+    </div>
+
+    <!-- QUESTION -->
+    <div class="card" style="text-align:center">
+      <p class="status" style="margin-bottom:10px">CURRENT QUESTION</p>
+      <h2 id="questionDisplay" style="font-size:23px;font-weight:bold">
+        等待房主出題中...
+      </h2>
+    </div>
+
+    <!-- ANSWER -->
+    <div class="card">
+      <h3 style="font-weight:bold;margin-bottom:12px">提交你的答案</h3>
+
+      <div style="display:flex;gap:10px">
+        <input id="answerInput" placeholder="輸入你的直覺答案...">
+        <button class="primary" onclick="submitAnswer()" style="white-space:nowrap">
+          送出答案
+        </button>
+      </div>
+
+      <p id="notice" class="status hidden" style="margin-top:10px">
+        ✓ 答案已成功送出！
+      </p>
+    </div>
+
+    <!-- CARDS -->
+    <div>
+      <h3 style="font-weight:bold;margin-bottom:15px">
+        玩家卡片牆 (<span id="playerCount">0</span> 人)
+      </h3>
+      <div id="cards" class="grid-cards"></div>
+    </div>
+
+  </section>
+</main>
+
+<footer style="text-align:center;padding:25px;color:#787774;font-size:12px">
+  Notion Style Telepathy Game © 2026
+</footer>
+
+<script>
+
+// GOOGLE APPS SCRIPT API
+const API = "https://script.google.com/macros/s/AKfycbyrsYjzx99MtassPTpbkkQps75fLQMbnldKyGqluiiCCf2Osponq7XnZ0dqkaluht6Ivg/exec";
+
+let room = "";
+let name = "";
+let isHost = false;
+let timer = null;
+
+let state = {
+  status: "setup",
+  question: "",
+  answers: {}
+};
+
+// RANDOM ROOM
+function randomRoom() {
+  document.getElementById("roomId").value =
+    Math.floor(1000 + Math.random() * 9000);
+}
+
+// HOST MODE
+function toggleHost() {
+  isHost = !isHost;
+
+  document.getElementById("hostPanel").classList.toggle("hidden", !isHost);
+
+  document.getElementById("hostBadge").innerText =
+    isHost ? "👑 房主 Mode" : "👤 玩家 View";
+}
+
+// JOIN ROOM
+function joinRoom() {
+  name = document.getElementById("playerName").value.trim();
+  room = document.getElementById("roomId").value.trim();
+
+  if (!name || !room) {
+    alert("請輸入暱稱與房間代碼！");
+    return;
+  }
+
+  document.getElementById("showRoom").innerText = room;
+  document.getElementById("showName").innerText = name;
+
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+
+  if (timer) clearInterval(timer);
+
+  loadState();
+  timer = setInterval(loadState, 2500);
+}
+
+// LOAD DATA
+async function loadState() {
+  if (!room) return;
+
+  try {
+    const response = await fetch(
+      API + "?room=" + encodeURIComponent(room)
+    );
+
+    if (!response.ok) throw new Error("連線錯誤");
+
+    state = await response.json();
+
+    document.getElementById("connection").innerText = "● 連線成功";
+
+    updateUI();
+
+  } catch (error) {
+    document.getElementById("connection").innerText = "● 連線失敗";
+    console.error(error);
+  }
+}
+
+// SEND DATA
+async function sendData(data) {
+  if (!room) return;
+
+  data.room = room;
+
+  try {
+    const response = await fetch(API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (!response.ok) throw new Error("傳送失敗");
+
+    await loadState();
+
+  } catch (error) {
+    alert("連線失敗，請檢查 Google Apps Script！");
+    console.error(error);
+  }
+}
+
+// HOST: QUESTION
+function setQuestion() {
+  if (!isHost) return alert("只有房主可以出題！");
+
+  const q = document.getElementById("questionInput").value.trim();
+
+  if (!q) return alert("請輸入題目！");
+
+  sendData({
+    action: "set_question",
+    question: q
+  });
+}
+
+// HOST: REVEAL
+function reveal() {
+  if (!isHost) return alert("只有房主可以開牌！");
+
+  sendData({
+    action: "reveal"
+  });
+}
+
+// HOST: RESET
+function resetGame() {
+  if (!isHost) return alert("只有房主可以重置！");
+
+  if (!confirm("確定要重置房間嗎？")) return;
+
+  document.getElementById("questionInput").value = "";
+  document.getElementById("answerInput").value = "";
+
+  sendData({
+    action: "reset"
+  });
+}
+
+// PLAYER: ANSWER
+function submitAnswer() {
+  const answer = document.getElementById("answerInput").value.trim();
+
+  if (!answer) return alert("請輸入答案！");
+
+  sendData({
+    action: "submit_answer",
+    playerName: name,
+    answer: answer
+  });
+
+  const notice = document.getElementById("notice");
+
+  notice.classList.remove("hidden");
+
+  setTimeout(() => notice.classList.add("hidden"), 3000);
+}
+
+// UPDATE UI
+function updateUI() {
+
+  const question = document.getElementById("questionDisplay");
+
+  question.innerText =
+    state.status === "setup"
+      ? "等待房主出題中..."
+      : state.question || "尚未設定題目";
+
+  document.getElementById("hostStatus").innerText =
+    "狀態: " + state.status;
+
+  const answers = state.answers || {};
+  const players = Object.keys(answers);
+
+  document.getElementById("playerCount").innerText = players.length;
+
+  const container = document.getElementById("cards");
+  const revealed = state.status === "revealed";
+
+  // Keep existing cards during polling so flip animation
+  // is not restarted every 2.5 seconds.
+  const signature = JSON.stringify({
+    answers: answers,
+    revealed: revealed
+  });
+
+  if (container.dataset.signature === signature) return;
+
+  container.dataset.signature = signature;
+  container.innerHTML = "";
+
+  players.forEach(player => {
+
+    const card = document.createElement("div");
+
+    card.className = "perspective" + (revealed ? " flipped" : "");
+
+    const inner = document.createElement("div");
+    inner.className = "flip-inner";
+
+    const front = document.createElement("div");
+    front.className = "front";
+
+    const playerLabel = document.createElement("strong");
+    playerLabel.innerText =
+      player + (player === name ? " (你)" : "");
+
+    const lock = document.createElement("div");
+    lock.innerText = "🔒 已完成作答";
+    lock.style.textAlign = "center";
+    lock.style.fontSize = "13px";
+
+    const waiting = document.createElement("div");
+    waiting.className = "status";
+    waiting.innerText = "等待開牌...";
+
+    front.append(playerLabel, lock, waiting);
+
+    const back = document.createElement("div");
+    back.className = "back";
+
+    const backName = document.createElement("strong");
+    backName.innerText = player;
+
+    const answer = document.createElement("div");
+    answer.innerText = String(answers[player] ?? "");
+    answer.style.fontWeight = "bold";
+    answer.style.fontSize = "19px";
+
+    const footer = document.createElement("div");
+    footer.className = "status";
+    footer.innerText = "✨ 心電感應";
+
+    back.append(backName, answer, footer);
+
+    inner.append(front, back);
+    card.appendChild(inner);
+    container.appendChild(card);
+
+  });
+}
+
+</script>
+</body>
+</html>
